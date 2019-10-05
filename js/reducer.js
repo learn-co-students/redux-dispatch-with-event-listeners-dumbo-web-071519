@@ -1,7 +1,17 @@
 // add code snippets from README
-let state;
 
-reducer = (state = { count: 0 }, action) => {
+createStore = reducer => {
+  let state;
+  dispatch = action => {
+    state = reducer(state, action);
+    render();
+  };
+  getState = () => {
+    return state;
+  };
+  return { dispatch, getState };
+};
+changeCount = (state = { count: 0 }, action) => {
   switch (action.type) {
     case "INCREASE_COUNT":
       return { count: state.count + 1 };
@@ -14,16 +24,13 @@ reducer = (state = { count: 0 }, action) => {
 
 render = () => {
   let container = document.getElementById("container");
-  container.textContent = state.count;
-};
-dispatch = action => {
-  state = reducer(state, action);
-  render();
+  container.textContent = store.getState().count;
 };
 
 let button = document.getElementById("button");
 button.addEventListener("click", () => {
-  dispatch({ type: "INCREASE_COUNT" });
+  store.dispatch({ type: "INCREASE_COUNT" });
 });
 
-dispatch({ type: "hocus-pocus" });
+let store = createStore(changeCount);
+store.dispatch({ type: "hocus-pocus" });
